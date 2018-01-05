@@ -173,6 +173,7 @@ class Account < Ekylibre::Record::Base
 
   # This method:allows to create the parent accounts if it is necessary.
   before_validation do
+    self.number = number.ljust(Preference[:account_number_digits], '0') if number
     self.reconcilable = reconcilableable? if reconcilable.nil?
     self.label = tc(:label, number: number.to_s, name: name.to_s)
     self.usages = Account.find_parent_usage(number) if usages.blank? && number
@@ -307,7 +308,10 @@ class Account < Ekylibre::Record::Base
     # Returns the name of the used accounting system
     # It takes the information in preferences
     def accounting_system
-      Preference[:accounting_system]
+      @tenant_when_last_cached ||= Ekylibre::Tenant.current
+      invalid_cache = @tenant_when_last_cached && @tenant_when_last_cached != Ekylibre::Tenant.current
+      @accounting_system = nil if invalid_cache
+      @accounting_system ||= Preference[:accounting_system]
     end
 
     # FIXME: This is an aberration of internationalization.

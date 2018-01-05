@@ -109,7 +109,7 @@ class JournalEntryItem < Ekylibre::Record::Base
 
   delegate :balanced?, to: :entry, prefix: true
   delegate :name, :number, to: :account, prefix: true
-  delegate :entity_country, :expected_financial_year, to: :entry
+  delegate :entity_country, :expected_financial_year, :continuous_number, to: :entry
 
   acts_as_list scope: :entry
 
@@ -152,6 +152,7 @@ class JournalEntryItem < Ekylibre::Record::Base
       letter_balance = letter_group.sum(:debit) - letter_group.sum(:credit)
       letter_balance += (credit_was || 0) - (debit_was || 0)
       letter_balance += debit - credit
+      self.letter = letter_radix
       self.letter += '*' unless letter_balance.zero?
     end
     # END OF DANGER ZONE
