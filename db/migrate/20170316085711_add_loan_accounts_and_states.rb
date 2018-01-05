@@ -1,6 +1,6 @@
 class AddLoanAccountsAndStates < ActiveRecord::Migration
   def change
-    ## Add states
+    # Add states
 
     add_column :loans, :state, :string
     add_column :loans, :ongoing_at, :datetime
@@ -8,7 +8,7 @@ class AddLoanAccountsAndStates < ActiveRecord::Migration
 
     execute "UPDATE loans SET state = 'ongoing', ongoing_at = NOW()"
 
-    # # Add loan accounts
+    # Add loan accounts
 
     add_column :loans, :loan_account_id, :integer
     add_column :loans, :interest_account_id, :integer
@@ -22,13 +22,13 @@ class AddLoanAccountsAndStates < ActiveRecord::Migration
     add_column :loan_repayments, :accountable, :boolean, default: false, null: false
     add_column :loan_repayments, :locked, :boolean, default: false, null: false
 
-    # # Update mandatory loans accounts
+    # Update mandatory loans accounts
 
-    loans_account = Account.find_or_import_from_nomenclature(:loans)
-    interests_account = Account.find_or_import_from_nomenclature(:loans_interests)
-
-    unless loans_account.nil? && interests_account.nil?
-      execute("UPDATE loans SET loan_account_id = #{loans_account.id}, interest_account_id = #{interests_account.id}")
-    end
+    # loans_account = Account.find_or_import_from_nomenclature(:loans)
+    # interests_account = Account.find_or_import_from_nomenclature(:loans_interests)
+    # 
+    # unless loans_account.nil? && interests_account.nil?
+    #   execute("UPDATE loans SET loan_account_id = #{loans_account.id}, interest_account_id = #{interests_account.id}")
+    # end
   end
 end

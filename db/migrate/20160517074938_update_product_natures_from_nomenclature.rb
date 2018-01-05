@@ -37,13 +37,12 @@ class UpdateProductNaturesFromNomenclature < ActiveRecord::Migration
       query << ", frozen_indicators_list = #{quote fields[:frozen_indicators]}" if fields[:frozen_indicators]
       query << ", variable_indicators_list = #{quote fields[:variable_indicators]}" if fields[:variable_indicators]
       query << ", variety = #{quote fields[:variety]}" if fields[:variety]
-      if fields[:category]
-        # FIXME: Remove model to be independant of... models
-        ProductNatureCategory.import_from_nomenclature(fields[:category])
-        category_id = select_value('SELECT id FROM product_nature_categories WHERE reference_name = ' + quote(fields[:category].to_s)).to_i
-        query << ", category_id = #{category_id}"
-      end
-
+      # if fields[:category]
+      #   # FIXME: Remove model to be independant of... models
+      #   ProductNatureCategory.import_from_nomenclature(fields[:category])
+      #   category_id = select_value('SELECT id FROM product_nature_categories WHERE reference_name = ' + quote(fields[:category].to_s)).to_i
+      #   query << ", category_id = #{category_id}"
+      # end
       query << " WHERE reference_name = #{quote reference_name.to_s}"
       execute query
     end
